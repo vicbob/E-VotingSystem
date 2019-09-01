@@ -18,7 +18,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title><?php echo $title?></title>
+    <title><?php echo $title ?></title>
 
     <!-- Custom fonts for this template-->
     <link href="../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -158,7 +158,9 @@
                 <li class="breadcrumb-item active">Overview</li>
             </ol>
 
-            <?php echo $content ?>
+            <div class="pre-scrollable">
+                <?php echo $content ?>
+            </div>
         </div>
 
     </div>
