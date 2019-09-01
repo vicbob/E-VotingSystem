@@ -44,7 +44,7 @@ else{
 }
 
 $election_result = "<div>
-<p><a href=''> View election result</a></p>
+<p><a href='view_result.php'> View election result</a></p>
 </div>";
 $title = "Home Page";
 $content = $eligibility.$election_result;

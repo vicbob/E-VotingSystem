@@ -55,7 +55,10 @@ function process_form()
         if (mysqli_num_rows($result) > 0) {
             while ($row = $result->fetch_assoc()) {
                 $id = $row["id"];
+                $name = $row["firstname"];
                 $_SESSION['id'] = $id;
+                $_SESSION['firstname'] = $name;
+
             }
             echo "<div class='form'>
 <form method='post' action=" . htmlspecialchars($_SERVER['PHP_SELF']) . ">

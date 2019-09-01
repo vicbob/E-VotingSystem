@@ -35,7 +35,7 @@
 
 <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
-    <a class="navbar-brand mr-1" href="index.html">Start Bootstrap</a>
+    <a class="navbar-brand mr-1" href="home.php">Hello <?php $_SESSION['firstname'] ?></a>
 
     <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
         <i class="fas fa-bars"></i>
@@ -57,36 +57,7 @@
 
     <!-- Navbar -->
     <ul class="navbar-nav ml-auto ml-md-0">
-        <li class="nav-item dropdown no-arrow mx-1">
-            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown"
-               aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-bell fa-fw"></i>
-                <span class="badge badge-danger">9+</span>
-            </a>
 
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="alertsDropdown">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Something else here</a>
-            </div>
-        </li>
-        <li class="nav-item dropdown no-arrow mx-1">
-            <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown"
-               aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-envelope fa-fw"></i>
-                <span class="badge badge-danger">7</span>
-            </a>
-
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="messagesDropdown">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Something else here</a>
-            </div>
-        </li>
         <li class="nav-item dropdown no-arrow">
             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
                aria-haspopup="true" aria-expanded="false">
@@ -110,7 +81,7 @@
     <!-- Sidebar -->
     <ul class="sidebar navbar-nav">
         <li class="nav-item active">
-            <a class="nav-link" href="index.html">
+            <a class="nav-link" href="home.php">
                 <i class="fas fa-fw fa-tachometer-alt"></i>
                 <span>Dashboard</span>
             </a>
@@ -119,30 +90,36 @@
             <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown"
                aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-fw fa-folder"></i>
-                <span>Pages</span>
+                <span>Voting</span>
             </a>
 
             <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-                <h6 class="dropdown-header">Login Screens:</h6>
-                <a class="dropdown-item" href="login.html">Login</a>
-                <a class="dropdown-item" href="register.html">Register</a>
-                <a class="dropdown-item" href="forgot-password.html">Forgot Password</a>
+                <h6 class="dropdown-header">Categories:</h6>
+                <?php
+                require("db.php");
+                $sql = "SELECT DISTINCT category FROM election_table";
+                $result = mysqli_query($conn, $sql) or die(mysqli_error($conn));
 
-                <div class="dropdown-divider"></div>
-                <h6 class="dropdown-header">Other Pages:</h6>
-                <a class="dropdown-item" href="404.html">404 Page</a>
-                <a class="dropdown-item" href="blank.html">Blank Page</a>
+                if (mysqli_num_rows($result) > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        $category = $row["category"];
+                        echo '<form action="vote.php" method="get">
+                        <input type="submit"name="category" value="' . $category . '" class="dropdown-item category">
+                        </form>';
+                    }
+                }
+                ?>
             </div>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="charts.html">
+            <a class="nav-link" href="view_result.php">
                 <i class="fas fa-fw fa-chart-area"></i>
-                <span>Charts</span></a>
+                <span>View Results</span></a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="tables.html">
-                <i class="fas fa-fw fa-table"></i>
-                <span>Tables</span></a>
+            <a class="nav-link" href="manage-profile.php">
+                <i class="fas fa-user-circle fa-fw"></i>
+                <span>Manage Profile</span></a>
         </li>
     </ul>
 
@@ -153,7 +130,7 @@
             <!-- Breadcrumbs-->
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
-                    <a href="#">Dashboard</a>
+                    <a href="home.php">Dashboard</a>
                 </li>
                 <li class="breadcrumb-item active">Overview</li>
             </ol>
@@ -224,6 +201,7 @@
 <!-- Demo scripts for this page-->
 <script src="../js/demo/datatables-demo.js"></script>
 <script src="../js/demo/chart-area-demo.js"></script>
+
 
 </body>
 
