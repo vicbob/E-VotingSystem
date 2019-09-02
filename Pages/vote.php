@@ -60,11 +60,31 @@ if (isset($_GET['category'])) {
         $has_voted = true;
     }
 
+    $sql = "SELECT dob FROM users WHERE id ='$user_id'";
+    $result = mysqli_query($conn, $sql) or die(mysqli_error($conn));
+    $dob = '';
+    if (mysqli_num_rows($result) > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $dob = $row["dob"];
+        }
+    }
+
+    $eligibility = false;
+    if ($dob != NULL) {
+        $date = (new DateTime())->format('Y-m-d');
+        $diff = strtotime($date) - strtotime($dob);
+        $years = floor($diff / (365 * 60 * 60 * 24));
+        if ($years >= 18) {
+            $eligibility = true;
+        }
+    }
+
     $sql = "SELECT * FROM election_table WHERE category = '$category'";
     $result = mysqli_query($conn, $sql) or die(mysqli_error($conn));
 
-    $content .= '<div >
-		<h3>AVAILABLE CANDIDATES</h3>';
+    $content .= '<div class="jumbotron">
+		<h3 class="text-center">AVAILABLE CANDIDATES</h3>
+                   <div class="card-columns">';
     //loop through all table rows
 
     if (mysqli_num_rows($result) > 0) {
@@ -73,42 +93,53 @@ if (isset($_GET['category'])) {
             $lastname = $row["lastname"];
 
 
-            if (!$has_voted) {
-                $content .= "<div>
-                        <form action='vote.php' method='post'>
-                        <p>First Name: <input type='text'  name='firstname' value=$firstname></p>
-                        <p>Last Name: <input type='text'  name='lastname' value='$lastname'></p>
+            if (!$has_voted and $eligibility) {
+                $content .= "<div class='card align-items-center mb-3  bg-primary text-white' style=\"width: 20rem;\" >
+                            <img class=\"card-img-top\" style=\"height:12rem;\" src=\"../images/demo/avatar.png\" alt=\"vote image\">
+                                                          <div class=\"card-body align-items-center\">
+                        <form action='vote.php' method='post' class='align-items-center text-center'>
+                        <p class='text-center'>First Name: <input type='text' class='borderless text-white' contenteditable='false'  name='firstname' value=$firstname></p>
+                        <p class='text-center'>Last Name: <input type='text' class='borderless text-white' contenteditable='false'  name='lastname' value='$lastname'></p>
                         <br>
-                        <input type='submit' value='Vote' name='vote'>
+                        <input class='btn btn-success align-self-center' type='submit' value='Vote' name='vote'>
                         </form>
+                        </div>
                         </div>";
             } else {
-                $content .= " <div>
-                        <form action = 'vote.php' method = 'post' >
-                        <p > First Name: <input type = 'text'  name = 'firstname' value = $firstname ></p >
-                        <p > Last Name: <input type = 'text'  name = 'lastname' value = '$lastname' ></p >
+                $content .= " <div class='card align-items-center mb-3  bg-primary text-white' style=\"width: 20rem;\" >
+                            <img class=\"card-img-top\" style=\"height:12rem;\" src=\"../images/demo/avatar.png\" alt=\"vote image\">
+                                                          <div class=\"card-body align-items-center\">
+                        <form action = 'vote.php' method = 'post' class='align-items-center' >
+                        <p class='text-center' > First Name: <input class='borderless text-white' contenteditable='false' type = 'text'  name = 'firstname' value = $firstname ></p >
+                        <p class='text-center'> Last Name: <input class='borderless text-white' contenteditable='false' type = 'text'  name = 'lastname' value = '$lastname' ></p >
                         <br >
                             </form >
-                        </div > ";
+                        </div >
+                         </div>";
             }
         }
     } else {
         $content .= "<p > There are no candidates for this category < p>";
     }
-    $content .= '</div>';
+    $content .= '</div></div>';
 
 } else {
     $sql = "SELECT DISTINCT category FROM election_table";
     $result = mysqli_query($conn, $sql) or die(mysqli_error($conn));
-
+    $content .= '<div class="jumbotron">
+                   <div class="card-columns">';
     if (mysqli_num_rows($result) > 0) {
         while ($row = $result->fetch_assoc()) {
             $category = $row["category"];
-            $content .= '<form action="vote.php" method="get">
-                        <input type="submit"name="category" value="' . $category . '" class="dropdown - item category">
-                        </form>';
+            $content .= ' <form action="vote.php" method="get" class="text-center">
+            <button type="submit" value="'.$category.'" name="category"  class=" text-white borderless card p-3 align-items-center  bg-primary text-white">
+                   ' . $category . '
+                          </button>
+                       </form>';
         }
     }
+
+    $content .= '</div></div>';
 
 }
 

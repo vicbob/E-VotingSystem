@@ -1,15 +1,12 @@
 <?php
 
 use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
 
 
 function sendOTP($email, $otp){
 
     require('PHPMailer/src/PHPMailer.php');
     require('PHPMailer/src/SMTP.php');
-
-
 // Load Composer's autoloader
 //    require 'vendor/autoload.php';
 

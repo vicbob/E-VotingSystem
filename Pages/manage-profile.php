@@ -7,7 +7,7 @@ if (!isset($_SESSION['id'])) {
     header("location:access-denied.php");
 }
 $id = $_SESSION['id'];
-echo $id;
+$content = "";
 //retrive voter details from the users table
 $sql = "SELECT * FROM users WHERE id = '$id'";
 $result = mysqli_query($conn, $sql) or die(mysqli_error($conn));
@@ -21,6 +21,10 @@ if ($row) {
     $firstname = $row['firstname'];
     $lastname = $row['lastname'];
     $email = $row['email'];
+    $address = $row['address'];
+    $occupation = $row['occupation'];
+    $dob = $row['dob'];
+    $state_of_origin = $row['state_of_origin'];
 }
 
 if (isset($_POST['update'])) {
@@ -41,18 +45,18 @@ if (isset($_POST['update'])) {
     // redirect back to profile
     if ($result == true) {
         $_SESSION["message"] = 'Profile updated successfully';
-        $_SESSION["message_status"] = 'Success';
+        $_SESSION["message_status"] = 'success';
 //    header("location:home.php");
 
         echo "<script>
                 window.location.replace('home.php');
                 </script>";
         exit();
+    } else {
+        $_SESSION["message"] = 'Profile update unsuccessful';
+        $_SESSION["message_status"] = 'failure';
     }
-    else{
-        $_SESSION["message"] = 'Profile updated unsuccessful';
-        $_SESSION["message_status"] = 'Failure';
-    }
+    session_write_close();
 
 }
 
@@ -65,78 +69,130 @@ $content = '
 <!-- ################################################################################################ -->
 <!-- ################################################################################################ -->
 
-<div class="wrapper bgded overlay" style="">
+<div class="jumbotron">
         <!-- ################################################################################################ -->
-        <h2 class="font-x3 uppercase btmspace-80 underlined"> Online <a href="#">Voting</a></h2>
-        <ul class="nospace group">
-            <li class="one_half first">
-                <blockquote>
-                    <table border="0" width="620" align="center">
-                        <CAPTION><h3>MY PROFILE</h3></CAPTION>
-                        <form>
-                            <br>
-                            <tr><td></td><td></td></tr>
-                            <tr>
-                                <td style="color:#000000"; >Id:</td>
-                                <td style="color:#000000"; ><?php echo $id; ?></td>
-                            </tr>
-                            <tr>
-                                <td style="color:#000000"; >First Name:</td>
-                                <td style="color:#000000"; ><?php echo $firstname; ?></td>
-                            </tr>
-                            <tr>
-                                <td style="color:#000000"; >Last Name:</td>
-                                <td style="color:#000000"; ><?php echo $lastname; ?></td>
-                            </tr>
-                            <tr>
-                                <td style="color:#000000"; >Email:</td>
-                                <td style="color:#000000"; ><?php echo $email; ?></td>
-                            </tr>
-                            <tr>
-                                <td style="color:#000000"; >Occupation:</td>
-                                <td style="color:#000000"; ><?php echo $occupation; ?></td>
-                            </tr>
-                            <tr>
-                                <td style="color:#000000"; >State of Origin:</td>
-                                <td style="color:#000000"; ><?php echo $state_of_origin; ?></td>
-                            </tr>
-                            <tr>
-                                <td style="color:#000000"; >Date of Birth:</td>
-                                <td style="color:#000000"; ><?php echo $dob; ?></td>
-                            </tr>
-                            <tr>
-                                <td style="color:#000000"; >Password:</td>
-                                <td style="color:#000000"; >Encrypted</td>
-                            </tr>
-                    </table>
-                    </form>
+        <div class="jumbotron bg-secondary">
+        <div class="card-group text-md-left">
+        <div class="col-lg-1"></div>
+        <div class="card borderless bg-secondary ">
+        <h2 class=""> My Profile</a></h2>
 
-                </blockquote>
+            <p >First Name:'.$firstname.'</p>
 
-            </li>
-            <li class="one_half">
-                    <table  border="0" width="620" align="center">
-                        <CAPTION><h3>UPDATE PROFILE</h3></CAPTION>
+                                <p >Last Name:'.$lastname.'
+                                </p>
+
+                                <p>Email:'. $email.'</p>
+
+                                <p>Occupation:'.$occupation.'
+                                </p>
+
+                                <p>State of Origin:'.$state_of_origin.'
+                                </p>
+
+                                <p>Date of Birth:'.$dob.'
+                                </p>
+
+                                <p>Address:'.$address.'
+                                </p>
+
+                                <p>Password: Encrypted
+                                </p>
+                                </div>
+                               </div>
+                               </div>
+
+                    <div class = "card card-register mx-auto mt-5">
+                                <div class="card-header">Update Profile</div>
+                                    <div class="card-body" id="signup">
                         <form action="manage-profile.php ?>" method="post">
-                            <table align="center">
-                                <tr><td  style="background-color:#0000ff"  >First Name:</td><td style="background-color:#0000ff"  ><input  style="color:#000000"; type="text" " name="firstname" maxlength="15" value=""></td></tr>
+                                 <div class="form-group">
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <div class="form-label-group">
+                                    <input type="text" id="firstname" class="form-control" required autocomplete="off"
+                                           name="firstname" placeholder="First Name" autofocus="autofocus"/>
+                                    <label for="firstname">
+                                        First Name
+                                    </label>
+                                </div>
+                            </div>
 
-                                <tr><td style="background-color:#bf00ff">Last Name:</td><td style="background-color:#bf00ff"><input style="color:#000000";  type="text" " name="lastname" maxlength="15" value=""></td></tr>
+                            <div class="col-md-6">
+                                <div class="form-label-group">
+                                    <input type="text" id="lastname" required autocomplete="off" name="lastname"
+                                           class="form-control" autofocus="autofocus" placeholder="Last Name"/>
+                                    <label for="lastname">
+                                        Last Name
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                                <tr><td style="background-color:#0000ff" >Email Address:</td><td style="background-color:#0000ff"><input style="color:#000000";  type="text"" name="email" maxlength="100" value=""></td></tr>
+                    <div class="form-group">
+                        <div class="form-label-group">
+                            <input type="email" id="email" required autocomplete="off" name="email" class="form-control"
+                                   placeholder="Email Address" autofocus="autofocus"/>
+                            <label for="email">
+                                Email Address
+                            </label>
+                        </div>
+                    </div>
 
-                                <tr><td style="background-color:#bf00ff" >Address:</td><td style="background-color:#bf00ff"><input  style="color:#000000";  type="text"  " name="address" maxlength="100" value=""></td></tr>
+                    <div class="form-group">
+                        <div class="form-label-group">
+                            <input type="text" id="address" required autocomplete="off" name="address" class="form-control"
+                                   placeholder="Address" autofocus="autofocus"/>
+                            <label for="address">
+                               Address
+                            </label>
+                        </div>
+                    </div>
 
-                                <tr><td style="background-color:#0000ff" >New Password:</td><td style="background-color:#0000ff" ><input  style="color:#000000";  type="password"" name="password" maxlength="15" value=""></td></tr>
+                    <div class="form-group">
+                        <div class="form-label-group">
+                            <input type="password" id="password" required autocomplete="off" name="password" class="form-control"
+                                   placeholder="New Password" autofocus="autofocus"/>
+                            <label for="password">
+                                New Password
+                            </label>
+                        </div>
+                    </div>
 
-                                <tr><td style="background-color:#bf00ff" >State of Origin:</td><td style="background-color:#bf00ff"><input  style="color:#000000";  type="text"  " name="state_of_origin" maxlength="100" value=""></td></tr>
+                    <div class="form-group">
+                        <div class="form-label-group">
+                            <input type="text" id="state_of_origin" required autocomplete="off" name="state_of_origin" class="form-control"
+                                   placeholder="State of Origin" autofocus="autofocus"/>
+                            <label for="state_of_origin">
+                                State of Origin
+                            </label>
+                        </div>
+                    </div>
 
-                                <tr><td style="background-color:#bf00ff" >Date of Birth:</td><td style="background-color:#bf00ff"><input  style="color:#000000";  type="date"  " name="dob"  value=""></td></tr>
+                   <div class="form-group">
+                        <div class="form-label-group">
+                            <input type="date" id="dob" required autocomplete="off" name="dob" class="form-control"
+                                   placeholder="Date of Birth" autofocus="autofocus"/>
+                            <label for="dob">
+                                Date of Birth
+                            </label>
+                        </div>
+                    </div>
 
-                                <tr><td style="background-color:#bf00ff" >Occupation:</td><td style="background-color:#bf00ff"><input  style="color:#000000";  type="text"  " name="occupation" maxlength="100" value=""></td></tr>
+                    <div class="form-group">
+                        <div class="form-label-group">
+                            <input type="text" id="occupation" required autocomplete="off" name="occupation" class="form-control"
+                                   placeholder="Occupation" autofocus="autofocus"/>
+                            <label for="occupation">
+                                Occupation
+                            </label>
+                        </div>
+                    </div>
 
-                                <tr><td style="background-color:#0000ff" >&nbsp;</td></td><td style="background-color:#0000ff" ><input style="color:#ff0000";  type="submit" name="update" value="Update Profile"></td></tr>
-                            </table>
+                    <button name="update" type="submit" class="btn btn-primary btn-block"/>
+                    Update Profile</button>
+
                         </form>
                     </table>
             </li>

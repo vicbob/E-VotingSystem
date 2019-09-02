@@ -1796,7 +1796,8 @@ class PHPMailer
     {
         $bad_rcpt = [];
         if (!$this->smtpConnect($this->SMTPOptions)) {
-            throw new Exception($this->lang('smtp_connect_failed'), self::STOP_CRITICAL);
+//            throw new Exception($this->lang('smtp_connect_failed'), self::STOP_CRITICAL);
+            throw new \Exception("Error");
         }
         //Sender already validated in preSend()
         if ('' == $this->Sender) {

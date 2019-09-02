@@ -28,6 +28,7 @@
 
     <!-- Custom styles for this template-->
     <link href="../css/sb-admin.css" rel="stylesheet">
+    <link href="../Style/index.css" rel="stylesheet">
 
 </head>
 
@@ -135,19 +136,47 @@
                 <li class="breadcrumb-item active">Overview</li>
             </ol>
 
+            <!--            display message if any-->
+            <?php
+            if (isset($_SESSION['message'])) {
+                $message = $_SESSION['message'];
+                $status = $_SESSION['message_status'];
+                echo "<br>";
+                if ($status == 'success') {
+                    echo '<div class="alert alert-success alert-dismissible fade show" role="alert">'.
+                            $message.
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>';
+                } else {
+                    echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">'.
+                        $message.
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>';
+                }
+                unset($_SESSION['message']);
+                unset($_SESSION['message_status']);
+            }
+            ?>
+
             <div class="pre-scrollable">
                 <?php echo $content ?>
             </div>
         </div>
 
     </div>
+
+
     <!-- /.container-fluid -->
 
     <!-- Sticky Footer -->
     <footer class="sticky-footer">
         <div class="container my-auto">
             <div class="copyright text-center my-auto">
-                <span>Copyright © Your Website 2019</span>
+                <span>Copyright © prince 2019</span>
             </div>
         </div>
     </footer>
@@ -174,11 +203,13 @@
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
-            <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-primary" href="login.html">Logout</a>
-            </div>
+            <form action="index.php" method="post">
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <input value="Logout" type="submit" name="logout" class="btn btn-primary">
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -201,6 +232,7 @@
 <!-- Demo scripts for this page-->
 <script src="../js/demo/datatables-demo.js"></script>
 <script src="../js/demo/chart-area-demo.js"></script>
+
 
 
 </body>

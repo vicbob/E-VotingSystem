@@ -1,16 +1,52 @@
 <?php session_start(); ?>
 <!DOCTYPE html>
 <html>
-<header>
-    <link href="../Style/index.css" rel="stylesheet" type="text/css">
+<head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="../Script/index.js"></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-</header>
+    <title>Login/Register</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+
+    <!-- Custom styles for this template-->
+    <link href="../css/sb-admin.css" rel="stylesheet">
+    <link href="../Style/index.css" rel="stylesheet">
+    <script src="../Script/index.js"></script>
+    <!-- Bootstrap core JavaScript-->
+    <script src="../vendor/jquery/jquery.min.js"></script>
+    <script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="../vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Page level plugin JavaScript-->
+    <script src="../vendor/chart.js/Chart.min.js"></script>
+    <script src="../vendor/datatables/jquery.dataTables.js"></script>
+    <script src="../vendor/datatables/dataTables.bootstrap4.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="../js/sb-admin.min.js"></script>
+
+    <!-- Demo scripts for this page-->
+    <script src="../js/demo/datatables-demo.js"></script>
+    <script src="../js/demo/chart-area-demo.js"></script>
+</head>
 </html>
 
 <?php
 require("db.php");
+if (isset($_POST['logout'])) {
+    session_unset();
+
+// destroy the session
+    session_destroy();
+}
 function process_form()
 {
     global $conn;
@@ -60,44 +96,61 @@ function process_form()
                 $_SESSION['firstname'] = $name;
 
             }
-            echo "<div class='form'>
-<form method='post' action=" . htmlspecialchars($_SERVER['PHP_SELF']) . ">
-    <div class='field-wrap'>
-
-        <input type='number' required autocomplete='off' name='otp' placeholder='OTP'/>
-    </div>
-    <br>
-    <button type='submit' class='button'/>Enter</button>
-</form>
-</div>";
+            echo "<body class=\"bg-dark\">
+                    <div class=\"container\">
+                        <div class=\"card card-login mx-auto mt-5\" id=\"size-div\">
+                            <div class='card-body'>
+                                <form method='post' action=" . htmlspecialchars($_SERVER['PHP_SELF']) . ">
+                                    <div class=\"form-group\">
+                                        <div class=\"form-label-group\">
+                                            <input type='text' required autocomplete='off' autofocus=\"autofocus\" id=\"otp\" name='otp' placeholder='OTP' class=\"form-control\"
+                                            />
+                                            <label for=\"otp\">OTP</label>
+                                            <br>
+                                            <button type='submit' class='btn btn-primary btn-block'/>Enter</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                     </div>
+                  </body>";
             $otp = rand(111111, 999999);
             //send otp to email
 
-            require_once("mail_function.php");
-            $mail_status = sendOTP($_POST["email"], $otp);
+            try {
+                require_once("mail_function.php");
+                $mail_status = sendOTP($_POST["email"], $otp);
 
-            if ($mail_status == 1) {
-                $date = new DateTime();
-                $date = $date->format('Y-m-d-H-i-s');
-                echo $date;
+                if ($mail_status == 1) {
+                    $date = new DateTime();
+                    $date = $date->format('Y-m-d-H-i-s');
+                    echo $date;
 //          $result = mysqli_query($conn, "INSERT INTO otp_expiry(otp,is_expired,create_at) VALUES ('$otp', 0, '" . date("Y-m-d H:i:s") . "')");
-                $sql = "INSERT INTO otp_table(otp,is_expired,created_at) VALUES ($otp, 0, '$date')";
-                $result = mysqli_query($conn, $sql) or die(mysqli_error($conn));
-                echo "got here", $result;
-                $current_id = mysqli_insert_id($conn);
-                if (!empty($current_id)) {
-                    $success = 1;
+                    $sql = "INSERT INTO otp_table(otp,is_expired,created_at) VALUES ($otp, 0, '$date')";
+                    $result = mysqli_query($conn, $sql) or die(mysqli_error($conn));
+                    echo "got here", $result;
+                    $current_id = mysqli_insert_id($conn);
+                    if (!empty($current_id)) {
+                        $success = 1;
+                    }
+                    session_write_close();
+                } else {
+                    echo "Not sent";
+                    $error_message = "Email not exists!";
                 }
-            } else {
-                echo "Not sent";
-                $error_message = "Email not exists!";
+                exit;
+            }catch(\Exception $e){
+                $_SESSION['message'] = "An error occured while sending OTP";
+                $_SESSION['message_status'] = 'failure';
+                session_write_close();
+                echo '<script> window.location.replace("index.php")</script>';
             }
-            exit;
         } else {
             echo "<p>Please check your details and login again </p>";
 
         }
-    } elseif (count($_POST) == 1) {
+    } elseif (isset($_POST['otp'])) {
 //    login here
         $otp = $_POST['otp'];
         if (!empty($_POST["otp"])) {
@@ -124,99 +177,182 @@ function process_form()
 process_form();
 ?>
 
-<!DOCTYPE html>
-<html>
-<header>
-    <link href="../Style/index.css" rel="stylesheet" type="text/css">
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Login/Register</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+
+    <!-- Custom styles for this template-->
+    <link href="../css/sb-admin.css" rel="stylesheet">
+    <link href="../Style/index.css" rel="stylesheet">
+    <script src="../Script/index.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-</header>
-<body>
+</head>
 
-<div class="form">
+<body class="bg-dark">
 
-    <ul class="tab-group">
-        <li class="tab active"><a href="#signup">Sign Up</a></li>
-        <li class="tab"><a href="#login">Log In</a></li>
-    </ul>
-
-    <div class="tab-content">
-        <div id="signup">
-            <h1>Sign Up for Free</h1>
-
-            <form action="<?php htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="post">
-
-                <div class="top-row">
-                    <div class="field-wrap">
-                        <label>
-                            First Name<span class="req">*</span>
-                        </label>
-                        <input type="text" required autocomplete="off" name="firstname"/>
-                    </div>
-
-                    <div class="field-wrap">
-                        <label>
-                            Last Name<span class="req">*</span>
-                        </label>
-                        <input type="text" required autocomplete="off" name="lastname"/>
-                    </div>
-                </div>
-
-                <div class="field-wrap">
-                    <label>
-                        Email Address<span class="req">*</span>
-                    </label>
-                    <input type="email" required autocomplete="off" name="email"/>
-                </div>
-
-                <div class="field-wrap">
-                    <label>
-                        Set A Password<span class="req">*</span>
-                    </label>
-                    <input type="password" required autocomplete="off" name="password"/>
-                </div>
-
-                <button type="submit" class="button button-block"/>
-                Sign Up</button>
-
-            </form>
-
+<div class="container">
+    <?php
+    if (isset($_SESSION['message'])) {
+        $message = $_SESSION['message'];
+        $status = $_SESSION['message_status'];
+        if ($status == "success") {
+            echo '<br><div class="alert alert-success alert-dismissible fade show" role="alert">'.
+                $message.
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>';
+        } else {
+            echo '<br><div class="alert alert-danger alert-dismissible fade show" role="alert">'.
+                $message.
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>';
+        }
+        unset($_SESSION['message']);
+        unset($_SESSION['message_status']);
+    }
+    ?>
+    <div class="card card-register mx-auto mt-5" id="size-div">
+        <div class="card-header">
+            <ul class="tab-group">
+                <li class="tab active"><a href="#signup">Sign Up</a></li>
+                <li class="tab"><a href="#login">Log In</a></li>
+            </ul>
         </div>
 
-        <div id="login">
-            <h1>Welcome Back!</h1>
+        <div class="tab-content">
+            <div class="card-body" id="signup">
 
-            <form action="<?php htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="post">
+                <form action="<?php htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="post">
 
-                <div class="field-wrap">
-                    <label>
-                        Email Address<span class="req">*</span>
-                    </label>
-                    <input type="email" name="email" required autocomplete="off"/>
-                </div>
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <div class="form-label-group">
+                                    <input type="text" id="firstname" class="form-control" required autocomplete="off"
+                                           name="firstname" placeholder="First Name" autofocus="autofocus"/>
+                                    <label for="firstname">
+                                        First Name
+                                    </label>
+                                </div>
+                            </div>
 
-                <div class="field-wrap">
-                    <label>
-                        Password<span class="req">*</span>
-                    </label>
-                    <input type="password" name="password" required autocomplete="off"/>
-                </div>
+                            <div class="col-md-6">
+                                <div class="form-label-group">
+                                    <input type="text" id="lastname" required autocomplete="off" name="lastname"
+                                           class="form-control" autofocus="autofocus" placeholder="Last Name"/>
+                                    <label for="lastname">
+                                        Last Name
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                <p class="forgot"><a href="#">Forgot Password?</a></p>
+                    <div class="form-group">
+                        <div class="form-label-group">
+                            <input type="email" id="email" required autocomplete="off" name="email" class="form-control"
+                                   placeholder="Email Address" autofocus="autofocus"/>
+                            <label for="email">
+                                Email Address
+                            </label>
+                        </div>
+                    </div>
 
-                <button class="button button-block"/>
-                Log In</button>
+                    <div class="form-group">
+                        <div class="form-label-group">
+                            <input id="password" type="password" required autocomplete="off" name="password"
+                                   class="form-control" placeholder="Password" autofocus="autofocus"/>
+                            <label for="password">
+                                Password
+                            </label>
+                        </div>
+                    </div>
 
-            </form>
+                    <button type="submit" class="btn btn-primary btn-block"/>
+                    Sign Up</button>
 
+                </form>
+            </div>
+
+
+            <div class="card-body" id="login">
+                <form action="<?php htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="post">
+
+                    <div class="form-group">
+                        <div class="form-label-group">
+
+                            <input class="form-control" id="email2" autofocus="autofocus" type="email" name="email"
+                                   required placeholder="Email Address"/>
+                            <label for="email2">
+                                Email Address
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-label-group">
+                            <input type="password" class="form-control" id="password2" placeholder="Password"
+                                   name="password" required
+                                   autocomplete="off" autofocus="autofocus"/>
+                            <label for="password2">
+                                Password
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" value="remember-me">
+                                Remember Password
+                            </label>
+                        </div>
+                    </div>
+                    <p class="forgot"><a href="#">Forgot Password?</a></p>
+
+                    <button type="submit" class="btn btn-primary btn-block"/>
+                    Log In</button>
+
+                </form>
+
+
+            </div>
         </div>
-
+        <!-- tab-content -->
     </div>
-    <!-- tab-content -->
-
 </div>
 <!-- /form -->
-<script src="../Script/index.js"></script>
+<!-- Bootstrap core JavaScript-->
+<script src="../vendor/jquery/jquery.min.js"></script>
+<script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
+<!-- Core plugin JavaScript-->
+<script src="../vendor/jquery-easing/jquery.easing.min.js"></script>
+
+<!-- Page level plugin JavaScript-->
+<script src="../vendor/chart.js/Chart.min.js"></script>
+<script src="../vendor/datatables/jquery.dataTables.js"></script>
+<script src="../vendor/datatables/dataTables.bootstrap4.js"></script>
+
+<!-- Custom scripts for all pages-->
+<script src="../js/sb-admin.min.js"></script>
+
+<!-- Demo scripts for this page-->
+<script src="../js/demo/datatables-demo.js"></script>
+<script src="../js/demo/chart-area-demo.js"></script>
 
 </body>
 
