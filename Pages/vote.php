@@ -91,6 +91,7 @@ if (isset($_GET['category'])) {
         while ($row = $result->fetch_assoc()) {
             $firstname = $row["firstname"];
             $lastname = $row["lastname"];
+            $party = $row["party"];
 
 
             if (!$has_voted and $eligibility) {
@@ -98,8 +99,9 @@ if (isset($_GET['category'])) {
                             <img class=\"card-img-top\" style=\"height:12rem;\" src=\"../images/demo/avatar.png\" alt=\"vote image\">
                                                           <div class=\"card-body align-items-center\">
                         <form action='vote.php' method='post' class='align-items-center text-center'>
-                        <p class='text-center'>First Name: <input type='text' class='borderless text-white' contenteditable='false'  name='firstname' value=$firstname></p>
-                        <p class='text-center'>Last Name: <input type='text' class='borderless text-white' contenteditable='false'  name='lastname' value='$lastname'></p>
+                        <p>First Name: <input type='text' class='borderless text-white' contenteditable='false'  name='firstname' value=$firstname></p>
+                        <p>Last Name: <input type='text' class='borderless text-white' contenteditable='false'  name='lastname' value='$lastname'></p>
+                        <p>Party: <input type='text' class='borderless text-white' contenteditable='false'  name='party' value='$party'></p>
                         <br>
                         <input class='btn btn-success align-self-center' type='submit' value='Vote' name='vote'>
                         </form>
@@ -110,8 +112,9 @@ if (isset($_GET['category'])) {
                             <img class=\"card-img-top\" style=\"height:12rem;\" src=\"../images/demo/avatar.png\" alt=\"vote image\">
                                                           <div class=\"card-body align-items-center\">
                         <form action = 'vote.php' method = 'post' class='align-items-center' >
-                        <p class='text-center' > First Name: <input class='borderless text-white' contenteditable='false' type = 'text'  name = 'firstname' value = $firstname ></p >
-                        <p class='text-center'> Last Name: <input class='borderless text-white' contenteditable='false' type = 'text'  name = 'lastname' value = '$lastname' ></p >
+                        <p > First Name: <input class='borderless text-white' contenteditable='false' type = 'text'  name = 'firstname' value = $firstname ></p >
+                        <p> Last Name: <input class='borderless text-white' contenteditable='false' type = 'text'  name = 'lastname' value = '$lastname' ></p >
+                        <p>Party: <input type='text' class='borderless text-white' contenteditable='false'  name='party' value='$party'></p>
                         <br >
                             </form >
                         </div >

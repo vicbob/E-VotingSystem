@@ -32,6 +32,7 @@ if (mysqli_num_rows($result) > 0) {
                     <th>S/N</th>
                     <th>First Name</th>
                     <th>Last Name</th>
+                    <th>Party</th>
                     <th>Votes</th>
                   </tr>
                 </thead>';
@@ -41,6 +42,7 @@ if (mysqli_num_rows($result) > 0) {
         while ($row = $result2->fetch_assoc()) {
             $firstname = $row['firstname'];
             $lastname = $row['lastname'];
+            $party = $row['party'];
             $vote_count = $row['vote_count'];
             if ($vote_count==null){$vote_count=0;}
 
@@ -49,6 +51,7 @@ if (mysqli_num_rows($result) > 0) {
                     <td>' . $sn . '</td>
                     <td>' . $firstname . '</td>
                     <td>' . $lastname . '</td>
+                    <td>' . $party . '</td>
                     <td>' . $vote_count . '</td>
                   </tr>
                 </tbody>';
