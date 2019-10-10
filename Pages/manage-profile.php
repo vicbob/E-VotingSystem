@@ -98,6 +98,18 @@ $content = '
 
                                 <p>Password: Encrypted
                                 </p>
+                                ';
+                                $date = (new DateTime())->format('Y-m-d');
+                                $diff = strtotime($date) - strtotime($dob);
+                                $years = floor($diff / (365 * 60 * 60 * 24));
+                                if ($years >= 18) {
+                                    $content.='<p>Fingerprint Capture: Yes
+                                    </p>
+                                    
+                                    <p>Password: Yes
+                                    </p>';
+                                }
+                           $content.= '
                                 </div>
                                </div>
                                </div>
